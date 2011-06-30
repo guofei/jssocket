@@ -12,8 +12,23 @@ static NPNetscapeFuncs* sBrowserFuncs = NULL;
 
 typedef struct InstanceData {
   NPP npp;
-  NPWindow window;
+  NPObject *PluginObject;
 } InstanceData;
+
+static struct NPClass PluginClass = {
+  NP_CLASS_STRUCT_VERSION,
+  NULL,
+  NULL,
+  NULL,
+  hasMethod,
+  invoke,
+  NULL,
+  NULL,
+  NULL,
+  NULL,
+  NULL,
+};
+static NPObject *plugin_instance;
 
 NP_EXPORT(NPError)
 NP_Initialize(NPNetscapeFuncs* bFuncs, NPPluginFuncs* pFuncs)
@@ -88,6 +103,7 @@ NPP_New(NPMIMEType pluginType, NPP instance, uint16_t mode, int16_t argc, char* 
     return NPERR_OUT_OF_MEMORY_ERROR;
   memset(instanceData, 0, sizeof(InstanceData));
   instanceData->npp = instance;
+  instanceData->PluginObject = sBrowserFuncs->create(instance,&PluginClass);
   instance->pdata = instanceData;
 
   return NPERR_NO_ERROR;
@@ -147,6 +163,16 @@ NPP_URLNotify(NPP instance, const char* URL, NPReason reason, void* notifyData) 
 
 NPError
 NPP_GetValue(NPP instance, NPPVariable variable, void *value) {
+  if (variable == NPPVpluginScriptableNPObject) {
+    void **v = (void **)value;
+    NPObject *instance = instance->pdata->PluginObject;
+
+    if (instance)
+      sBrowserFuncs->retainobject(instance);
+
+    *v = instance;
+    return NPERR_NO_ERROR;
+  }
   return NPERR_GENERIC_ERROR;
 }
 
