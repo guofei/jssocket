@@ -67,6 +67,8 @@ bool hasMethod(NPObject *obj, NPIdentifier methodName){
 bool invoke(NPObject *obj, NPIdentifier methodName,const NPVariant *args,uint32_t argCount,NPVariant *result){
 	NPUTF8 *name = sBrowserFuncs->utf8fromidentifier( methodName );
 	int nType = chkMethod( name );
+	
+	DebugMsg("in invoke\n");
 
 	int i;
 	NPString str;
@@ -75,16 +77,18 @@ bool invoke(NPObject *obj, NPIdentifier methodName,const NPVariant *args,uint32_
 	case CONNECT:
 		sBrowserFuncs->memfree( name );
 		BOOLEAN_TO_NPVARIANT( false, *result);
-    
+		DebugMsg("in CONNECT\n");
 		if(argCount == 2 && NPVARIANT_IS_STRING(args[0]) && NPVARIANT_IS_INT32(args[1])){
+		  DebugMsg("in if\n");
 			str = NPVARIANT_TO_STRING( args[0] );
 			i = NPVARIANT_TO_INT32( args[1] );
 			DebugMsg((char *)str.UTF8Characters);
 			/*
 			  do connect
-			 */
-			
-			INT32_TO_NPVARIANT(i, *result);
+			*/
+			int sock = tcp_connect((char *)str.UTF8Characters, i );
+
+			INT32_TO_NPVARIANT(sock, *result);
 			return true;    
 		}
 
