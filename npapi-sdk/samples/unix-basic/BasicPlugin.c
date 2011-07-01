@@ -1,4 +1,6 @@
 #include "BasicPlugin.h"
+#include "api.h"
+#include "jsmethod.h"
 
 #include <stdlib.h>
 #include <string.h>
@@ -8,35 +10,12 @@
 #define PLUGIN_DESCRIPTION PLUGIN_NAME " (Mozilla SDK)"
 #define PLUGIN_VERSION     "1.0.0.0"
 
-//debug message print to file
-static void DebugMsg( char *msg )
-{
-	FILE *fp = NULL;
-	static int nfStartup = 0;
-	int pid = 0;
-
-	if( NULL != (fp = fopen( "./debug-log.txt", "a+" )) ){
-
-		if( 0 == nfStartup ){
-			nfStartup = 1;
-			fprintf( fp, "::first call");
-		}
-		pid = getpid();
-		fprintf( fp, "::pid(%6d)::", pid );
-		fputs( msg, fp );
-		fclose( fp );
-	}
-}
-
 static NPNetscapeFuncs* sBrowserFuncs = NULL;
 
 typedef struct InstanceData {
 	NPP npp;
 	NPObject *npobj_instance;
 } InstanceData;
-
-bool hasMethod(NPObject *obj, NPIdentifier methodName);
-bool invoke(NPObject *obj, NPIdentifier methodName,const NPVariant *args,uint32_t argCount,NPVariant *result);
 
 static struct NPClass PluginClass = {
 	NP_CLASS_STRUCT_VERSION,
@@ -205,16 +184,4 @@ NPP_GetValue(NPP instance, NPPVariable variable, void *value) {
 NPError
 NPP_SetValue(NPP instance, NPNVariable variable, void *value) {
 	return NPERR_GENERIC_ERROR;
-}
-
-
-bool hasMethod(NPObject *obj, NPIdentifier methodName){
-	DebugMsg("in hasMethod\n");
-	return true;
-}
-
-bool invoke(NPObject *obj, NPIdentifier methodName,const NPVariant *args,uint32_t argCount,NPVariant *result){
-	STRINGZ_TO_NPVARIANT(strdup("from plugin!"), *result);
-	DebugMsg("in invoke\n");
-	return true;    
 }
