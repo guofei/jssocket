@@ -1,5 +1,5 @@
-#ifndef jsmethod_h_
-#define jsmethod_h_
+#ifndef js_scripting_h_
+#define js_scripting_h_
 
 #include "BasicPlugin.h"
 extern bool hasMethod(NPObject *obj, NPIdentifier methodName);

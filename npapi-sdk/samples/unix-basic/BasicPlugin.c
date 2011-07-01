@@ -1,6 +1,6 @@
 #include "BasicPlugin.h"
 #include "api.h"
-#include "jsmethod.h"
+#include "js_scripting.h"
 
 #include <stdlib.h>
 #include <string.h>
@@ -33,7 +33,7 @@ static struct NPClass PluginClass = {
 };
 //static NPObject *plugin_instance;
 
-NP_EXPORT(NPError)
+NP_EXPORT(NPError) 
 NP_Initialize(NPNetscapeFuncs* bFuncs, NPPluginFuncs* pFuncs)
 {
 	sBrowserFuncs = bFuncs;
