@@ -10,7 +10,7 @@
 #define PLUGIN_DESCRIPTION PLUGIN_NAME " (Mozilla SDK)"
 #define PLUGIN_VERSION     "1.0.0.0"
 
-static NPNetscapeFuncs* sBrowserFuncs = NULL;
+NPNetscapeFuncs* sBrowserFuncs = NULL;
 
 typedef struct InstanceData {
 	NPP npp;
