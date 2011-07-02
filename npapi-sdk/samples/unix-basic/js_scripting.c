@@ -7,31 +7,31 @@
 #define LEN_OF_FUNCNAME 50
 
 typedef enum __FUNCNAMES{
-	CONNECT = 1,
-	FN_KVS_IN,
-	FN_KVS_RD,
+	TCP_CONNECT = 1,
+	TCP_SEND,
+	TCP_RECV,
 	FN_SRPC_GETUSERLIST,
 	FN_SRPC_ISEXISTUSER,
 	FN_SRPC_ISONLINEUSER,
 	FN_SRPC_CONNECT,
 	FN_SRPC_DISCONNECT,
 	FN_SRPC_CALL,
-	FN_TEST_GETHW,
+	CLOSE,
 	NUM_OF_FUNCS
 }FUNCNAMES;
 
 static char arrayFuncNames[NUM_OF_FUNCS][LEN_OF_FUNCNAME] = {
 	{ "" },
-	{ "connect" },
-	{ "kvs_in" },
-	{ "kvs_rd" },
+	{ "tcp_connect" },
+	{ "tcp_send" },
+	{ "tcp_recv" },
 	{ "srpc_getUserList" },
 	{ "srpc_isExistUser" },
 	{ "srpc_isOnlineUser" },
 	{ "srpc_connect" },
 	{ "srpc_disconnect" },
 	{ "srpc_call" },
-	{ "GetHw" }
+	{ "close" }
 };
 
 //enum __FUNNAMESが返る
@@ -72,26 +72,58 @@ bool invoke(NPObject *obj, NPIdentifier methodName,const NPVariant *args,uint32_
 
 	int i;
 	NPString str;
+	static char buf[1024];
 
 	switch( nType ){
-	case CONNECT:
+	case TCP_CONNECT:
 		sBrowserFuncs->memfree( name );
 		BOOLEAN_TO_NPVARIANT( false, *result);
-		DebugMsg("in CONNECT\n");
-		if(argCount == 2 && NPVARIANT_IS_STRING(args[0]) && NPVARIANT_IS_INT32(args[1])){
-		  DebugMsg("in if\n");
+		if(argCount == 2){
 			str = NPVARIANT_TO_STRING( args[0] );
 			i = NPVARIANT_TO_INT32( args[1] );
 			DebugMsg((char *)str.UTF8Characters);
-			/*
-			  do connect
-			*/
+
 			int sock = tcp_connect((char *)str.UTF8Characters, i );
 
 			INT32_TO_NPVARIANT(sock, *result);
 			return true;    
 		}
 
+		break;
+	case TCP_SEND:
+		sBrowserFuncs->memfree( name );
+		BOOLEAN_TO_NPVARIANT( false, *result);
+		if(argCount == 2){
+			str = NPVARIANT_TO_STRING( args[1] );//msg 
+			i = NPVARIANT_TO_INT32( args[0] );//socket
+			DebugMsg((char *)str.UTF8Characters);
+			
+			int slen = writen(i,(char *)str.UTF8Characters, strlen((char *)str.UTF8Characters));
+
+			INT32_TO_NPVARIANT(slen, *result);
+			return true;    
+		}
+		break;
+	case TCP_RECV:
+		sBrowserFuncs->memfree( name );
+		BOOLEAN_TO_NPVARIANT( false, *result);
+		if(argCount == 1){
+			i = NPVARIANT_TO_INT32( args[0] );
+		
+			int slen = readline(i,buf,1024 );
+
+			STRING_TO_NPVARIANT(buf, *result);
+			return true;    
+		}
+		break;
+	case CLOSE:
+		sBrowserFuncs->memfree( name );
+		BOOLEAN_TO_NPVARIANT( false, *result);
+		if(argCount == 1){
+			i = NPVARIANT_TO_INT32( args[0] );
+			close(i);
+			return true;    
+		}
 		break;
 	default:
 		break;
