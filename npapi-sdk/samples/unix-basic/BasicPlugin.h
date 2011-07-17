@@ -24,4 +24,10 @@ void    NPP_URLNotify(NPP instance, const char* URL, NPReason reason, void* noti
 NPError NPP_GetValue(NPP instance, NPPVariable variable, void *value);
 NPError NPP_SetValue(NPP instance, NPNVariable variable, void *value);
 
+typedef struct InstanceData {
+	NPP npp;
+	NPObject *npobj_instance;
+} InstanceData;
+extern InstanceData *mynpp;
+
 #endif // BasicPlugin_h_

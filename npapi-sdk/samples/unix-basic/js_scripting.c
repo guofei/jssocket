@@ -78,37 +78,39 @@ bool invoke(NPObject *obj, NPIdentifier methodName,const NPVariant *args,uint32_
 
 	switch( nType ){
 	case TEST:
-/*
+		DebugMsg("in test\n");
+		{
 		char* message = "Hello from C";
-  
+		DebugMsg(message);
+  		DebugMsg("0\n");
 		// Get window object.
 		NPObject* window = NULL;
-		NPN_GetValue(InstanceData->npp, NPNVWindowNPObject, &window);
-
+		sBrowserFuncs->getvalue(mynpp->npp, NPNVWindowNPObject, &window);
+  		DebugMsg("1\n");
 		// Get console object.
 		NPVariant consoleVar;
-		NPIdentifier id = NPN_GetStringIdentifier("console");
-		NPN_GetProperty(InstanceData->npp window, id, &consoleVar);
+		NPIdentifier id = sBrowserFuncs->getstringidentifier("console");
+		sBrowserFuncs->getproperty(mynpp->npp, window, id, &consoleVar);
 		NPObject* console = NPVARIANT_TO_OBJECT(consoleVar);
-
+  		DebugMsg("2\n");
 		// Get the debug object.
-		id = NPN_GetStringIdentifier("debug");
+		id = sBrowserFuncs->getstringidentifier("debug");
 
 		// Invoke the call with the message!
 		NPVariant type;
 		STRINGZ_TO_NPVARIANT(message, type);
 		NPVariant args[] = { type };
 		NPVariant voidResponse;
-		sBrowserFuncs->invoke(InstanceData->npp, console, id, args,
+		sBrowserFuncs->invoke(mynpp->npp, console, id, args,
 			   sizeof(args) / sizeof(args[0]),
 			   &voidResponse);
 
 		// Cleanup all allocated objects, otherwise, reference count and
 		// memory leaks will happen.
-		NPN_ReleaseObject(window);
-		NPN_ReleaseVariantValue(&consoleVar);
-		NPN_ReleaseVariantValue(&voidResponse);
-*/
+		sBrowserFuncs->releaseobject(window);
+		sBrowserFuncs->releasevariantvalue(&consoleVar);
+		sBrowserFuncs->releasevariantvalue(&voidResponse);
+		}
 		break;
 	case TCP_CONNECT:
 		sBrowserFuncs->memfree( name );

@@ -12,10 +12,7 @@
 
 NPNetscapeFuncs* sBrowserFuncs = NULL;
 
-typedef struct InstanceData {
-	NPP npp;
-	NPObject *npobj_instance;
-} InstanceData;
+InstanceData *mynpp;
 
 static struct NPClass PluginClass = {
 	NP_CLASS_STRUCT_VERSION,
@@ -108,6 +105,8 @@ NPP_New(NPMIMEType pluginType, NPP instance, uint16_t mode, int16_t argc, char* 
 	instanceData->npp = instance;
 	instanceData->npobj_instance = sBrowserFuncs->createobject(instance,&PluginClass);
 	instance->pdata = instanceData;
+
+	mynpp = instanceData;
 
 	return NPERR_NO_ERROR;
 }
