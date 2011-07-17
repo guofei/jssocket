@@ -78,9 +78,37 @@ bool invoke(NPObject *obj, NPIdentifier methodName,const NPVariant *args,uint32_
 
 	switch( nType ){
 	case TEST:
-		while(1){
-			DebugMsg("test\n");
-		}	
+/*
+		char* message = "Hello from C";
+  
+		// Get window object.
+		NPObject* window = NULL;
+		NPN_GetValue(InstanceData->npp, NPNVWindowNPObject, &window);
+
+		// Get console object.
+		NPVariant consoleVar;
+		NPIdentifier id = NPN_GetStringIdentifier("console");
+		NPN_GetProperty(InstanceData->npp window, id, &consoleVar);
+		NPObject* console = NPVARIANT_TO_OBJECT(consoleVar);
+
+		// Get the debug object.
+		id = NPN_GetStringIdentifier("debug");
+
+		// Invoke the call with the message!
+		NPVariant type;
+		STRINGZ_TO_NPVARIANT(message, type);
+		NPVariant args[] = { type };
+		NPVariant voidResponse;
+		sBrowserFuncs->invoke(InstanceData->npp, console, id, args,
+			   sizeof(args) / sizeof(args[0]),
+			   &voidResponse);
+
+		// Cleanup all allocated objects, otherwise, reference count and
+		// memory leaks will happen.
+		NPN_ReleaseObject(window);
+		NPN_ReleaseVariantValue(&consoleVar);
+		NPN_ReleaseVariantValue(&voidResponse);
+*/
 		break;
 	case TCP_CONNECT:
 		sBrowserFuncs->memfree( name );
@@ -119,7 +147,8 @@ bool invoke(NPObject *obj, NPIdentifier methodName,const NPVariant *args,uint32_
 		
 			int slen = readline(i,buf,1024 );
 
-			STRING_TO_NPVARIANT(buf, *result);
+			//STRING_TO_NPVARIANT(buf, *result);
+			DebugMsg(buf);
 			return true;    
 		}
 		break;
