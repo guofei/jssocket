@@ -17,6 +17,7 @@ typedef enum __FUNCNAMES{
 	FN_SRPC_DISCONNECT,
 	FN_SRPC_CALL,
 	CLOSE,
+	TEST,
 	NUM_OF_FUNCS
 }FUNCNAMES;
 
@@ -31,7 +32,8 @@ static char arrayFuncNames[NUM_OF_FUNCS][LEN_OF_FUNCNAME] = {
 	{ "srpc_connect" },
 	{ "srpc_disconnect" },
 	{ "srpc_call" },
-	{ "close" }
+	{ "close" },
+	{"test"}
 };
 
 //enum __FUNNAMESが返る
@@ -75,6 +77,11 @@ bool invoke(NPObject *obj, NPIdentifier methodName,const NPVariant *args,uint32_
 	static char buf[1024];
 
 	switch( nType ){
+	case TEST:
+		while(1){
+			DebugMsg("test\n");
+		}	
+		break;
 	case TCP_CONNECT:
 		sBrowserFuncs->memfree( name );
 		BOOLEAN_TO_NPVARIANT( false, *result);
