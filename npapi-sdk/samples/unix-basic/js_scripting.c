@@ -82,17 +82,17 @@ bool invoke(NPObject *obj, NPIdentifier methodName,const NPVariant *args,uint32_
 		{
 		char* message = "Hello from C";
 		DebugMsg(message);
-  		DebugMsg("0\n");
+
 		// Get window object.
 		NPObject* window = NULL;
 		sBrowserFuncs->getvalue(mynpp->npp, NPNVWindowNPObject, &window);
-  		DebugMsg("1\n");
+
 		// Get console object.
 		NPVariant consoleVar;
 		NPIdentifier id = sBrowserFuncs->getstringidentifier("console");
 		sBrowserFuncs->getproperty(mynpp->npp, window, id, &consoleVar);
 		NPObject* console = NPVARIANT_TO_OBJECT(consoleVar);
-  		DebugMsg("2\n");
+
 		// Get the debug object.
 		id = sBrowserFuncs->getstringidentifier("debug");
 
@@ -111,6 +111,7 @@ bool invoke(NPObject *obj, NPIdentifier methodName,const NPVariant *args,uint32_
 		sBrowserFuncs->releasevariantvalue(&consoleVar);
 		sBrowserFuncs->releasevariantvalue(&voidResponse);
 		}
+		INT32_TO_NPVARIANT(1,*result);
 		break;
 	case TCP_CONNECT:
 		sBrowserFuncs->memfree( name );

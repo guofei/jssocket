@@ -29,5 +29,6 @@ typedef struct InstanceData {
 	NPObject *npobj_instance;
 } InstanceData;
 extern InstanceData *mynpp;
+extern NPNetscapeFuncs* sBrowserFuncs;
 
 #endif // BasicPlugin_h_

@@ -94,7 +94,7 @@ NP_Shutdown()
 NPError
 NPP_New(NPMIMEType pluginType, NPP instance, uint16_t mode, int16_t argc, char* argn[], char* argv[], NPSavedData* saved) {
 	// Make sure we can render this plugin
-  
+	DebugMsg("in NPP New\n");
 	sBrowserFuncs->setvalue(instance, NPPVpluginWindowBool, (void*)false);
 
 	// set up our our instance data
