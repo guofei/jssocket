@@ -11,7 +11,6 @@
 #define PLUGIN_VERSION     "1.0.0.0"
 
 NPNetscapeFuncs* sBrowserFuncs = NULL;
-
 InstanceData *mynpp;
 
 static struct NPClass PluginClass = {

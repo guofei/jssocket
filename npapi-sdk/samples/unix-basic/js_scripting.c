@@ -6,6 +6,10 @@
 
 #define LEN_OF_FUNCNAME 50
 
+typedef struct async_args{
+	NPObject *func;
+}async_args;
+
 typedef enum __FUNCNAMES{
 	TCP_CONNECT = 1,
 	TCP_SEND,
@@ -35,6 +39,19 @@ static char arrayFuncNames[NUM_OF_FUNCS][LEN_OF_FUNCNAME] = {
 	{ "close" },
 	{"test"}
 };
+
+void test_asy(void *func_args)
+{
+	async_args *args = (async_args*)func_args;
+	NPVariant type;
+	STRINGZ_TO_NPVARIANT("12345",type);
+	NPVariant myargs[] = { type };
+	NPVariant voidResponse;
+	sBrowserFuncs->invokeDefault( mynpp->npp, args->func, myargs, 1, &voidResponse );
+	DebugMsg("in test asy!!!!!!!!!!!!!!!!!!!!!!!\n");
+	//sBrowserFuncs->releaseobject( obj );
+	//sBrowserFuncs->releasevariantvalue(&voidResponse);
+}
 
 //enum __FUNNAMESが返る
 int chkMethod(char *target)
@@ -100,10 +117,10 @@ bool invoke(NPObject *obj, NPIdentifier methodName,const NPVariant *args,uint32_
 		// Invoke the call with the message!
 		NPVariant type;
 		STRINGZ_TO_NPVARIANT(message, type);
-		NPVariant args[] = { type };
+		NPVariant myargs[] = { type };
 		NPVariant voidResponse;
-		sBrowserFuncs->invoke(mynpp->npp, console, id, args,
-			   sizeof(args) / sizeof(args[0]),
+		sBrowserFuncs->invoke(mynpp->npp, console, id, myargs,
+			   sizeof(myargs) / sizeof(myargs[0]),
 			   &voidResponse);
 
 		// Cleanup all allocated objects, otherwise, reference count and
@@ -130,7 +147,6 @@ bool invoke(NPObject *obj, NPIdentifier methodName,const NPVariant *args,uint32_
 
 		break;
 	case TCP_SEND:
-		sBrowserFuncs->memfree( name );
 		BOOLEAN_TO_NPVARIANT( false, *result);
 		if(argCount == 2){
 			str = NPVARIANT_TO_STRING( args[1] );//msg 
@@ -140,18 +156,27 @@ bool invoke(NPObject *obj, NPIdentifier methodName,const NPVariant *args,uint32_
 			int slen = writen(i,(char *)str.UTF8Characters, strlen((char *)str.UTF8Characters));
 
 			INT32_TO_NPVARIANT(slen, *result);
+			DebugMsg("send ok\n");
 			return true;    
 		}
 		break;
 	case TCP_RECV:
 		BOOLEAN_TO_NPVARIANT( false, *result);
-		if(argCount == 1){
+		if(argCount == 2){
 			i = NPVARIANT_TO_INT32( args[0] );
-		
-			int slen = readline(i,buf,1024 );
+			
+			NPObject *callback_obj;
+			callback_obj = NPVARIANT_TO_OBJECT( args[1] );
+			sBrowserFuncs->retainobject( callback_obj );
 
+			async_args myargs;
+			myargs.func = callback_obj;
+			//int slen = readline( i,buf,1024 );
+			//DebugMsg(buf);
+			sBrowserFuncs->pluginthreadasynccall( mynpp->npp, test_asy, &myargs );
+			DebugMsg("in tcp recv\n");			
 			//STRING_TO_NPVARIANT(buf, *result);
-			DebugMsg(buf);
+			
 			return true;    
 		}
 		break;
