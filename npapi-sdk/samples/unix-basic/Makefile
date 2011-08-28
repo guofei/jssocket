@@ -18,5 +18,5 @@ jsmethod.o:js_scripting.h
 
 
 clean :
-	rm npbasicplugin.so BasicPlugin.o js_scripting.o
+	rm npbasicplugin.so *.o
 

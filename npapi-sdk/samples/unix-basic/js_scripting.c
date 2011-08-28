@@ -69,9 +69,10 @@ bool hasMethod(NPObject *obj, NPIdentifier methodName){
 bool invoke(NPObject *obj, NPIdentifier methodName,const NPVariant *args,uint32_t argCount,NPVariant *result){
 	NPUTF8 *name = sBrowserFuncs->utf8fromidentifier( methodName );
 	int nType = chkMethod( name );
-	
-	DebugMsg("in invoke\n");
+	sBrowserFuncs->memfree( name );
 
+	DebugMsg("in invoke\n");
+	
 	int i;
 	NPString str;
 	static char buf[1024];
@@ -112,9 +113,9 @@ bool invoke(NPObject *obj, NPIdentifier methodName,const NPVariant *args,uint32_
 		sBrowserFuncs->releasevariantvalue(&voidResponse);
 		}
 		INT32_TO_NPVARIANT(1,*result);
+		return true;
 		break;
 	case TCP_CONNECT:
-		sBrowserFuncs->memfree( name );
 		BOOLEAN_TO_NPVARIANT( false, *result);
 		if(argCount == 2){
 			str = NPVARIANT_TO_STRING( args[0] );
@@ -143,7 +144,6 @@ bool invoke(NPObject *obj, NPIdentifier methodName,const NPVariant *args,uint32_
 		}
 		break;
 	case TCP_RECV:
-		sBrowserFuncs->memfree( name );
 		BOOLEAN_TO_NPVARIANT( false, *result);
 		if(argCount == 1){
 			i = NPVARIANT_TO_INT32( args[0] );
@@ -156,7 +156,6 @@ bool invoke(NPObject *obj, NPIdentifier methodName,const NPVariant *args,uint32_
 		}
 		break;
 	case CLOSE:
-		sBrowserFuncs->memfree( name );
 		BOOLEAN_TO_NPVARIANT( false, *result);
 		if(argCount == 1){
 			i = NPVARIANT_TO_INT32( args[0] );
@@ -167,8 +166,6 @@ bool invoke(NPObject *obj, NPIdentifier methodName,const NPVariant *args,uint32_
 	default:
 		break;
 	}
-
-	sBrowserFuncs->memfree( name );
 
 	return false;
 }
