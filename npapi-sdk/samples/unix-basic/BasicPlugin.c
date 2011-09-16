@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
+#include <pthread.h>
 
 #define PLUGIN_NAME        "Basic Sample Plug-in"
 #define PLUGIN_DESCRIPTION PLUGIN_NAME " (Mozilla SDK)"
@@ -12,6 +13,22 @@
 
 NPNetscapeFuncs* sBrowserFuncs = NULL;
 InstanceData *mynpp;
+
+void* threadfunc(void* p)
+{
+	pthread_detach(pthread_self());
+	int i;
+
+	while(1){
+		sleep(1);
+		DebugMsg("in threadfunc\n");
+	}
+	
+	
+	
+	return NULL;  
+}
+
 
 static struct NPClass PluginClass = {
 	NP_CLASS_STRUCT_VERSION,
@@ -107,6 +124,11 @@ NPP_New(NPMIMEType pluginType, NPP instance, uint16_t mode, int16_t argc, char* 
 
 	mynpp = instanceData;
 
+	pthread_t t;
+	if ( pthread_create(&t, NULL, threadfunc, NULL) != 0 )  
+		exit(1);
+	
+	
 	return NPERR_NO_ERROR;
 }
 

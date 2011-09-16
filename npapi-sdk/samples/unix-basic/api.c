@@ -26,7 +26,7 @@ DebugMsg( char *msg )
 			nfStartup = 1;
 			fprintf( fp, "::first call");
 		}
-		pid = getpid();
+		pid = pthread_self();
 		fprintf( fp, "::pid(%6d)::", pid );
 		fputs( msg, fp );
 		fclose( fp );

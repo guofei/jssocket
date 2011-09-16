@@ -42,15 +42,17 @@ static char arrayFuncNames[NUM_OF_FUNCS][LEN_OF_FUNCNAME] = {
 
 void test_asy(void *func_args)
 {
-	async_args *args = (async_args*)func_args;
+	//async_args *args = (async_args*)func_args;
+	NPObject *args = (NPObject *)func_args;
+	
 	NPVariant type;
 	STRINGZ_TO_NPVARIANT("12345",type);
 	NPVariant myargs[] = { type };
 	NPVariant voidResponse;
-	sBrowserFuncs->invokeDefault( mynpp->npp, args->func, myargs, 1, &voidResponse );
+	sBrowserFuncs->invokeDefault( mynpp->npp, args, myargs, 1, &voidResponse );
 	DebugMsg("in test asy!!!!!!!!!!!!!!!!!!!!!!!\n");
-	//sBrowserFuncs->releaseobject( obj );
-	//sBrowserFuncs->releasevariantvalue(&voidResponse);
+	//sBrowserFuncs->releaseobject( args->func );
+	sBrowserFuncs->releasevariantvalue(&voidResponse);
 }
 
 //enum __FUNNAMESが返る
@@ -173,7 +175,7 @@ bool invoke(NPObject *obj, NPIdentifier methodName,const NPVariant *args,uint32_
 			myargs.func = callback_obj;
 			//int slen = readline( i,buf,1024 );
 			//DebugMsg(buf);
-			sBrowserFuncs->pluginthreadasynccall( mynpp->npp, test_asy, &myargs );
+			sBrowserFuncs->pluginthreadasynccall( mynpp->npp, test_asy, callback_obj );
 			DebugMsg("in tcp recv\n");			
 			//STRING_TO_NPVARIANT(buf, *result);
 			
