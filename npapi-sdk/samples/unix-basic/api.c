@@ -92,6 +92,30 @@ writen(int fd, const void *vptr, size_t n)
 	return(n);
 }
 
+ssize_t 
+readn(int fd, void *vptr, size_t n)
+{
+	ssize_t nleft;
+	ssize_t nread;
+	char *ptr;
+
+	ptr = vptr;
+	nleft = n;
+	while( nleft > 0 ){
+		if( ( nread = read(fd,ptr,nleft) ) < 0 ){
+			if( errno == EINTR )
+				nread = 0;
+			else
+				return -1;
+		}
+		else if( nread == 0 )
+			break;
+		nleft -= nread;
+		ptr += nread;
+	}
+	return n-nleft;
+}
+
 ssize_t
 readline(int fd, void *vptr, size_t maxlen)
 {
@@ -120,3 +144,82 @@ again:
 	*ptr = 0;	/* null terminate like fgets() */
 	return(n);
 }
+
+int
+tcp_acc_port( int portno, int ip_version )
+{
+	struct addrinfo hints, *ai;
+	char portno_str[PORTNO_BUFSIZE];
+	int err, s, on, pf;
+
+    	switch( ip_version )
+	{
+	case 4:
+		pf = PF_INET;
+		break;
+	case 6:
+		pf = PF_INET6;
+		break;
+	default:
+		fprintf(stderr,"bad IP version: %d.  4 or 6 is allowed.\n",
+			ip_version );
+		goto error0;
+	}
+	snprintf( portno_str,sizeof(portno_str),"%d",portno );
+	memset( &hints, 0, sizeof(hints) );
+	ai = NULL;
+	hints.ai_family   = pf ;
+	hints.ai_flags    = AI_PASSIVE;
+	hints.ai_socktype = SOCK_STREAM ;
+	if( (err = getaddrinfo( NULL, portno_str, &hints, &ai )) )
+	{
+		fprintf(stderr,"bad portno %d? (%s)\n",portno,
+			gai_strerror(err) );
+		goto error0;
+	}
+	if( (s = socket(ai->ai_family, ai->ai_socktype, ai->ai_protocol)) < 0 )
+	{
+		perror("socket");
+		goto error1;
+	}
+
+#ifdef	IPV6_V6ONLY
+	if( ai->ai_family == PF_INET6 )
+	{
+		on = 1;
+		if( setsockopt(s,IPPROTO_IPV6, IPV6_V6ONLY,&on,sizeof(on)) < 0 )
+		{
+			perror("setsockopt(,,IPV6_V6ONLY)");
+			goto error1;
+		}
+	}
+#endif	/*IPV6_V6ONLY*/
+
+	if( bind(s,ai->ai_addr,ai->ai_addrlen) < 0 )
+	{
+		perror("bind");
+		fprintf(stderr,"port number %d can be already used. wait a moment or kill another program.\n", portno );
+		goto error2;
+	}
+	on = 1;
+	if( setsockopt( s, SOL_SOCKET, SO_REUSEADDR, &on, sizeof(on) ) < 0 )
+	{
+		perror("setsockopt(,,SO_REUSEADDR)");
+		goto error2;
+	}
+	if( listen( s, 5 ) < 0 )
+	{
+		perror("listen");
+		goto error2;
+	}
+	freeaddrinfo( ai );
+	return( s );
+
+error2:
+	close( s );	
+error1:
+	freeaddrinfo( ai );
+error0:
+	return( -1 );
+}
+

@@ -14,21 +14,21 @@
 NPNetscapeFuncs* sBrowserFuncs = NULL;
 InstanceData *mynpp;
 
-void* threadfunc(void* p)
-{
-	pthread_detach(pthread_self());
-	int i;
 
-	while(1){
-		sleep(1);
-		DebugMsg("in threadfunc\n");
-	}
-	
-	
-	
-	return NULL;  
-}
+/* void* threadfunc(void* p) */
+/* { */
+/* 	pthread_detach(pthread_self()); */
+/* 	int i; */
 
+/* 	while(1){ */
+/* 		sleep(1); */
+/* 		DebugMsg("in threadfunc\n"); */
+/* 	} */
+	
+	
+	
+/* 	return NULL;   */
+/* } */
 
 static struct NPClass PluginClass = {
 	NP_CLASS_STRUCT_VERSION,
@@ -107,6 +107,8 @@ NP_Shutdown()
 	return NPERR_NO_ERROR;
 }
 
+pthread_mutex_t mutex;
+
 NPError
 NPP_New(NPMIMEType pluginType, NPP instance, uint16_t mode, int16_t argc, char* argn[], char* argv[], NPSavedData* saved) {
 	// Make sure we can render this plugin
@@ -124,8 +126,12 @@ NPP_New(NPMIMEType pluginType, NPP instance, uint16_t mode, int16_t argc, char* 
 
 	mynpp = instanceData;
 
+	pthread_mutexattr_t mutexattr;
+	pthread_mutexattr_init(&mutexattr);
+	pthread_mutex_init(&mutex, &mutexattr);
+
 	pthread_t t;
-	if ( pthread_create(&t, NULL, threadfunc, NULL) != 0 )  
+	if ( pthread_create(&t, NULL, threadfunc_do_socket_event, NULL) != 0 )  
 		exit(1);
 	
 	
@@ -136,6 +142,7 @@ NPError
 NPP_Destroy(NPP instance, NPSavedData** save) {
 	InstanceData* instanceData = (InstanceData*)(instance->pdata);
 	free(instanceData);
+	pthread_mutex_destroy(&mutex);
 	return NPERR_NO_ERROR;
 }
 
