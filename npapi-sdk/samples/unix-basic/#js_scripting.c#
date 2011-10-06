@@ -113,7 +113,7 @@ void* threadfunc_do_socket_event(void* p)
 				async_args *args = malloc(sizeof(async_args));
 				args->obj = event_queue->obj;
 				args->n = TCP_RECV;
-				strncpy(args->buf,buf,strlen(buf));
+				strncpy(args->buf,buf,strlen(buf)+1);
 				//args->buf[0] = 'h';args->buf[1] = 'i'; args->buf[2] = '\0';
 				sBrowserFuncs->pluginthreadasynccall( mynpp->npp, do_obj_asy, args );
 
