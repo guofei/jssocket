@@ -7,28 +7,12 @@
 #include <stdio.h>
 #include <pthread.h>
 
-#define PLUGIN_NAME        "Basic Sample Plug-in"
+#define PLUGIN_NAME        "WebSocket with Server"
 #define PLUGIN_DESCRIPTION PLUGIN_NAME " (Mozilla SDK)"
 #define PLUGIN_VERSION     "1.0.0.0"
 
 NPNetscapeFuncs* sBrowserFuncs = NULL;
-InstanceData *mynpp;
-
-
-/* void* threadfunc(void* p) */
-/* { */
-/* 	pthread_detach(pthread_self()); */
-/* 	int i; */
-
-/* 	while(1){ */
-/* 		sleep(1); */
-/* 		DebugMsg("in threadfunc\n"); */
-/* 	} */
-	
-	
-	
-/* 	return NULL;   */
-/* } */
+InstanceData *plugin_instance_data;
 
 static struct NPClass PluginClass = {
 	NP_CLASS_STRUCT_VERSION,
@@ -112,7 +96,6 @@ pthread_mutex_t mutex;
 NPError
 NPP_New(NPMIMEType pluginType, NPP instance, uint16_t mode, int16_t argc, char* argn[], char* argv[], NPSavedData* saved) {
 	// Make sure we can render this plugin
-	DebugMsg("in NPP New\n");
 	sBrowserFuncs->setvalue(instance, NPPVpluginWindowBool, (void*)false);
 
 	// set up our our instance data
@@ -121,17 +104,17 @@ NPP_New(NPMIMEType pluginType, NPP instance, uint16_t mode, int16_t argc, char* 
 		return NPERR_OUT_OF_MEMORY_ERROR;
 	memset(instanceData, 0, sizeof(InstanceData));
 	instanceData->npp = instance;
-	instanceData->npobj_instance = sBrowserFuncs->createobject(instance,&PluginClass);
+	instanceData->npobject = sBrowserFuncs->createobject(instance,&PluginClass);
 	instance->pdata = instanceData;
 
-	mynpp = instanceData;
+	plugin_instance_data = instanceData;
 
 	pthread_mutexattr_t mutexattr;
 	pthread_mutexattr_init(&mutexattr);
 	pthread_mutex_init(&mutex, &mutexattr);
 
 	pthread_t t;
-	if ( pthread_create(&t, NULL, threadfunc_do_socket_event, NULL) != 0 )  
+	if ( pthread_create(&t, NULL, threadfunc, NULL) != 0 )  
 		exit(1);
 	
 	
@@ -197,7 +180,7 @@ NPP_GetValue(NPP instance, NPPVariable variable, void *value) {
 		void **v = (void **)value;
 		
 		InstanceData *p = instance->pdata;
-		NPObject *npobj = p->npobj_instance;
+		NPObject *npobj = p->npobject;
 
 		if (npobj)
 			sBrowserFuncs->retainobject(npobj);

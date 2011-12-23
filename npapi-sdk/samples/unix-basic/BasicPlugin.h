@@ -26,9 +26,9 @@ NPError NPP_SetValue(NPP instance, NPNVariable variable, void *value);
 
 typedef struct InstanceData {
 	NPP npp;
-	NPObject *npobj_instance;
+	NPObject *npobject;
 } InstanceData;
-extern InstanceData *mynpp;
+extern InstanceData *plugin_instance_data;
 extern NPNetscapeFuncs* sBrowserFuncs;
 
 #endif // BasicPlugin_h_

@@ -9,24 +9,6 @@
 #define LEN_OF_FUNCNAME 50
 pthread_mutex_t mutex;
 
-typedef struct async_args{
-	NPObject *obj;
-	char buf[1024];
-	int s;
-	int n;
-}async_args;
-
-typedef enum __FUNCNAMES{
-	TCP_CONNECT = 1,
-	TCP_SEND,
-	TCP_RECV,
-	TCP_ACC_PORT,
-	TCP_ACCEPT,
-	CLOSE,
-	TEST,
-	NUM_OF_FUNCS
-}FUNCNAMES;
-
 static char arrayFuncNames[NUM_OF_FUNCS][LEN_OF_FUNCNAME] = {
 	{ "" },
 	{ "tcp_connect" },
@@ -53,7 +35,9 @@ socket_event *event_queue;
 static int add_event(socket_event *event);
 static int del_event(socket_event *fist);
 
-void do_obj_asy(void *func_args)
+static void callback_to_javascript(void *func_args);
+
+void callback_to_javascript(void *func_args)
 {
 	//async_args *args = (async_args*)func_args;
 	//NPObject *args = (NPObject *)func_args;
@@ -65,26 +49,32 @@ void do_obj_asy(void *func_args)
 		INT32_TO_NPVARIANT(s,type);
 		NPVariant myargs[] = { type };
 		NPVariant voidResponse;
-		sBrowserFuncs->invokeDefault( mynpp->npp, tmp->obj, myargs, 1, &voidResponse );
+		sBrowserFuncs->invokeDefault( plugin_instance_data->npp, tmp->obj, myargs, 1, &voidResponse );
 		//sBrowserFuncs->releaseobject( args->func );
-		free(func_args);
+		free(tmp);
 		sBrowserFuncs->releasevariantvalue(&voidResponse);
 
 	}
 	else if( tmp->n == TCP_RECV ){
 		NPVariant type;
+
+		//FIXME
 		STRINGZ_TO_NPVARIANT(tmp->buf,type);
+		DebugMsg("tmp->buf:");
+		DebugMsg(tmp->buf);
+		DebugMsg("\n");
 		NPVariant myargs[] = { type };
 		NPVariant voidResponse;
-		sBrowserFuncs->invokeDefault( mynpp->npp, tmp->obj, myargs, 1, &voidResponse );
+		DebugMsg("in test asy!!!!!!!!!!!!!!!!!!!!!!!tcp recv\n");
+		sBrowserFuncs->invokeDefault( plugin_instance_data->npp, tmp->obj, myargs, 1, &voidResponse );
 		DebugMsg("in test asy!!!!!!!!!!!!!!!!!!!!!!!tcp recv\n");
 		//sBrowserFuncs->releaseobject( args->func );
-		free(func_args);
+		free(tmp);
 		sBrowserFuncs->releasevariantvalue(&voidResponse);
 	}
 }
 
-void* threadfunc_do_socket_event(void* p)
+void* threadfunc(void* p)
 {
 	pthread_detach(pthread_self());
 	while(1){
@@ -97,7 +87,7 @@ void* threadfunc_do_socket_event(void* p)
 				args->obj = event_queue->obj;
 				args->s = s;
 				args->n = TCP_CONNECT;
-				sBrowserFuncs->pluginthreadasynccall( mynpp->npp, do_obj_asy, args );
+				sBrowserFuncs->pluginthreadasynccall( plugin_instance_data->npp, callback_to_javascript, args );
 			}
 			else if(event_queue->name == TCP_SEND){
 				char *m = (char *)event_queue->buf;
@@ -115,7 +105,7 @@ void* threadfunc_do_socket_event(void* p)
 				args->n = TCP_RECV;
 				strncpy(args->buf,buf,strlen(buf));
 				//args->buf[0] = 'h';args->buf[1] = 'i'; args->buf[2] = '\0';
-				sBrowserFuncs->pluginthreadasynccall( mynpp->npp, do_obj_asy, args );
+				sBrowserFuncs->pluginthreadasynccall( plugin_instance_data->npp, callback_to_javascript, args );
 
 			}
 			else if(event_queue->name == TCP_ACC_PORT){
@@ -146,7 +136,7 @@ void test_asy(void *func_args)
 	STRINGZ_TO_NPVARIANT("12345",type);
 	NPVariant myargs[] = { type };
 	NPVariant voidResponse;
-	sBrowserFuncs->invokeDefault( mynpp->npp, args, myargs, 1, &voidResponse );
+	sBrowserFuncs->invokeDefault( plugin_instance_data->npp, args, myargs, 1, &voidResponse );
 	DebugMsg("in test asy!!!!!!!!!!!!!!!!!!!!!!!\n");
 	//sBrowserFuncs->releaseobject( args->func );
 	sBrowserFuncs->releasevariantvalue(&voidResponse);
@@ -203,12 +193,12 @@ bool invoke(NPObject *obj, NPIdentifier methodName,const NPVariant *args,uint32_
 
 		// Get window object.
 		NPObject* window = NULL;
-		sBrowserFuncs->getvalue(mynpp->npp, NPNVWindowNPObject, &window);
+		sBrowserFuncs->getvalue(plugin_instance_data->npp, NPNVWindowNPObject, &window);
 
 		// Get console object.
 		NPVariant consoleVar;
 		NPIdentifier id = sBrowserFuncs->getstringidentifier("console");
-		sBrowserFuncs->getproperty(mynpp->npp, window, id, &consoleVar);
+		sBrowserFuncs->getproperty(plugin_instance_data->npp, window, id, &consoleVar);
 		NPObject* console = NPVARIANT_TO_OBJECT(consoleVar);
 
 		// Get the debug object.
@@ -219,7 +209,7 @@ bool invoke(NPObject *obj, NPIdentifier methodName,const NPVariant *args,uint32_
 		STRINGZ_TO_NPVARIANT(message, type);
 		NPVariant myargs[] = { type };
 		NPVariant voidResponse;
-		sBrowserFuncs->invoke(mynpp->npp, console, id, myargs,
+		sBrowserFuncs->invoke(plugin_instance_data->npp, console, id, myargs,
 			   sizeof(myargs) / sizeof(myargs[0]),
 			   &voidResponse);
 
@@ -234,38 +224,55 @@ bool invoke(NPObject *obj, NPIdentifier methodName,const NPVariant *args,uint32_
 		break;
 	case TCP_CONNECT:
 		BOOLEAN_TO_NPVARIANT( false, *result);
+		int ret = 0,s;
 		if(argCount == 3){
-			str = NPVARIANT_TO_STRING( args[0] );
+			if( NPVARIANT_IS_STRING( args[0] ) )
+				str = NPVARIANT_TO_STRING( args[0] );
+			else{
+				INT32_TO_NPVARIANT(-1, *result);
+				return true;
+			}
+			
 			if(NPVARIANT_IS_INT32(args[1]))
-				i = NPVARIANT_TO_INT32( args[1] );
+				s = NPVARIANT_TO_INT32( args[1] );
 			else if(NPVARIANT_IS_DOUBLE(args[1]))
-				i = NPVARIANT_TO_DOUBLE( args[1] );
+				s = NPVARIANT_TO_DOUBLE( args[1] );
+			else{
+				INT32_TO_NPVARIANT(-1, *result);
+				return true;
+			}
+			
+			NPObject *callback_obj;
+			if( NPVARIANT_IS_OBJECT(args[2]) )
+				callback_obj = NPVARIANT_TO_OBJECT( args[2] );
+			else{
+				INT32_TO_NPVARIANT(-1, *result);
+				return true;
+			}
+			sBrowserFuncs->retainobject( callback_obj );
+
 			event->name = TCP_CONNECT;
-			//here need be change
-			//!!!!!!!!!!!!!!
-			event->buf = strndup((char *)str.UTF8Characters,str.UTF8Length+1);
+			event->buf = strndup((char *)str.UTF8Characters, str.UTF8Length+1);
 			char *buf = event->buf;
 			buf[str.UTF8Length] = '\0';
-			//DebugMsg(event->buf);
-			event->s = i;
-			NPObject *callback_obj;
-			callback_obj = NPVARIANT_TO_OBJECT( args[2] );
-			sBrowserFuncs->retainobject( callback_obj );
+			event->s = s;
 			event->obj = callback_obj;
 			event->next = NULL;
 			add_event(event);
-			//int sock = tcp_connect((char *)str.UTF8Characters, i );
-
-			INT32_TO_NPVARIANT(1, *result);
-			//DebugMsg("connect over\n");
-			return true;    
 		}
-
+		INT32_TO_NPVARIANT(ret, *result);
+		return true;    
 		break;
 	case TCP_SEND:
 		BOOLEAN_TO_NPVARIANT( false, *result);
 		if(argCount == 2){
-			str = NPVARIANT_TO_STRING( args[1] );//msg
+			if( NPVARIANT_IS_STRING( args[1] ) )
+				str = NPVARIANT_TO_STRING( args[1] ); //msg
+			else{
+				INT32_TO_NPVARIANT(-1, *result);
+				return true;
+			}
+
 			strncpy(buf,(char *)str.UTF8Characters,strlen((char *)str.UTF8Characters));
 
 			/* event->buf = strndup((char *)str.UTF8Characters,str.UTF8Length+1); */
@@ -321,7 +328,7 @@ bool invoke(NPObject *obj, NPIdentifier methodName,const NPVariant *args,uint32_
 			//myargs.func = callback_obj;
 			//int slen = readline( i,buf,1024 );
 			//DebugMsg(buf);
-			//sBrowserFuncs->pluginthreadasynccall( mynpp->npp, test_asy, callback_obj );
+			//sBrowserFuncs->pluginthreadasynccall( plugin_instance_data->npp, test_asy, callback_obj );
 			//DebugMsg("in tcp recv\n");			
 			//STRING_TO_NPVARIANT(buf, *result);
 			
@@ -375,7 +382,7 @@ int del_event(socket_event *fist)
 {
 	pthread_mutex_lock(&mutex);
 	event_queue = fist->next;
-	free(fist->buf);
+	//free(fist->buf);
 	free(fist);
 	pthread_mutex_unlock(&mutex);
 	return 0;

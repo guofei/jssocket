@@ -1,0 +1,251 @@
+::first call::pid(-1231980432)::in NPP New
+::pid(-1231980432)::in invoke
+::pid(-1244898448)::in tcp conncet
+::pid(-1231980432)::in invoke
+::pid(-1231980432)::tcp send:::pid(-1231980432)::25::pid(-1231980432)::in invoke
+::pid(-1244898448)::hello
+::pid(-1244898448)::in readline
+::pid(-1244898448)::hello
+::pid(-1244898448)::recv buf:::pid(-1244898448)::hello
+::pid(-1231980432)::tmp->buf:::pid(-1231980432)::hello
+::pid(-1231980432)::
+::pid(-1231980432)::in test asy!!!!!!!!!!!!!!!!!!!!!!!tcp recv
+::first call::pid(-1231980432)::in NPP New
+::pid(-1231980432)::in invoke
+::pid(-1244898448)::in tcp conncet
+::pid(-1231980432)::in invoke
+::pid(-1231980432)::tcp send:::pid(-1231980432)::25::pid(-1244898448)::hello
+::pid(-1231980432)::in invoke
+::pid(-1244898448)::in readline
+::pid(-1244898448)::hello
+::pid(-1244898448)::recv buf:::pid(-1244898448)::hello
+::pid(-1231980432)::tmp->buf:::pid(-1231980432)::hello
+::pid(-1231980432)::
+::pid(-1231980432)::in test asy!!!!!!!!!!!!!!!!!!!!!!!tcp recv
+::first call::pid(-1231980432)::in NPP New
+::pid(-1231980432)::in invoke
+::pid(-1244898448)::in tcp conncet
+::pid(-1231980432)::in invoke
+::pid(-1231980432)::tcp send:::pid(-1231980432)::25::pid(-1231980432)::in invoke
+::pid(-1244898448)::hello
+::pid(-1244898448)::in readline
+::pid(-1244898448)::hello
+::pid(-1244898448)::recv buf:::pid(-1244898448)::hello
+::pid(-1231980432)::tmp->buf:::pid(-1231980432)::hello
+::pid(-1231980432)::
+::pid(-1231980432)::in test asy!!!!!!!!!!!!!!!!!!!!!!!tcp recv
+::first call::pid(-1231980432)::in NPP New
+::pid(-1231980432)::in invoke
+::pid(-1244898448)::in tcp conncet
+::pid(-1231980432)::in invoke
+::pid(-1231980432)::tcp send:::pid(-1231980432)::25::pid(-1244898448)::hello
+::pid(-1231980432)::in invoke
+::pid(-1244898448)::in readline
+::pid(-1244898448)::hello
+::pid(-1244898448)::recv buf:::pid(-1244898448)::hello
+::pid(-1231980432)::tmp->buf:::pid(-1231980432)::hello
+::pid(-1231980432)::
+::pid(-1231980432)::in test asy!!!!!!!!!!!!!!!!!!!!!!!tcp recv
+::first call::pid(-1231980432)::in NPP New
+::pid(-1231980432)::in invoke
+::pid(-1244898448)::in tcp conncet
+::pid(-1231980432)::in invoke
+::pid(-1231980432)::tcp send:::pid(-1231980432)::25::pid(-1231980432)::in invoke
+::pid(-1244898448)::hello
+::pid(-1244898448)::in readline
+::pid(-1244898448)::hello
+::pid(-1244898448)::recv buf:::pid(-1244898448)::hello
+::pid(-1231980432)::tmp->buf:::pid(-1231980432)::hello
+::pid(-1231980432)::
+::pid(-1231980432)::in test asy!!!!!!!!!!!!!!!!!!!!!!!tcp recv
+::first call::pid(-1231980432)::in NPP New
+::pid(-1231980432)::in invoke
+::pid(-1244898448)::in tcp conncet
+::pid(-1231980432)::in invoke
+::pid(-1231980432)::tcp send:::pid(-1231980432)::25::pid(-1231980432)::in invoke
+::pid(-1244898448)::hello
+::pid(-1244898448)::in readline
+::pid(-1244898448)::hello
+::pid(-1244898448)::recv buf:::pid(-1244898448)::hello
+::pid(-1231980432)::tmp->buf:::pid(-1231980432)::hello
+::pid(-1231980432)::
+::pid(-1231980432)::in test asy!!!!!!!!!!!!!!!!!!!!!!!tcp recv
+::first call::pid(-1231980432)::in NPP New
+::pid(-1231980432)::in invoke
+::pid(-1244898448)::in tcp conncet
+::pid(-1231980432)::in invoke
+::pid(-1231980432)::tcp send:::pid(-1231980432)::25::pid(-1231980432)::in invoke
+::pid(-1244898448)::hello
+::pid(-1244898448)::in readline
+::pid(-1244898448)::hello
+::pid(-1244898448)::recv buf:::pid(-1244898448)::hello
+::pid(-1231980432)::tmp->buf:::pid(-1231980432)::hello
+::pid(-1231980432)::
+::pid(-1231980432)::in test asy!!!!!!!!!!!!!!!!!!!!!!!tcp recv
+::first call::pid(-1231980432)::in NPP New
+::pid(-1231980432)::in invoke
+::pid(-1244898448)::in tcp conncet
+::pid(-1231980432)::in invoke
+::pid(-1231980432)::tcp send:::pid(-1231980432)::25::pid(-1231980432)::in invoke
+::pid(-1244898448)::hello
+::pid(-1244898448)::in readline
+::pid(-1244898448)::hello
+::pid(-1244898448)::recv buf:::pid(-1244898448)::hello
+::first call::pid(-1231980432)::in NPP New
+::pid(-1231980432)::in invoke
+::pid(-1244898448)::in tcp conncet
+::pid(-1231980432)::in invoke
+::pid(-1231980432)::tcp send:::pid(-1231980432)::25::pid(-1231980432)::in invoke
+::pid(-1244898448)::hello
+::pid(-1244898448)::in readline
+::pid(-1244898448)::hello
+::pid(-1244898448)::recv buf:::pid(-1244898448)::hello
+::first call::pid(-1231980432)::in NPP New
+::pid(-1231980432)::in invoke
+::pid(-1244898448)::in tcp conncet
+::pid(-1231980432)::in invoke
+::pid(-1231980432)::tcp send:::pid(-1231980432)::25::pid(-1231980432)::in invoke
+::pid(-1244898448)::hello
+::pid(-1244898448)::in readline
+::pid(-1244898448)::hello
+::pid(-1244898448)::recv buf:::pid(-1244898448)::hello
+::pid(-1231980432)::tmp->buf:::pid(-1231980432)::hello
+::pid(-1231980432)::
+::pid(-1231980432)::in test asy!!!!!!!!!!!!!!!!!!!!!!!tcp recv
+::first call::pid(-1231980432)::in NPP New
+::pid(-1231980432)::in invoke
+::pid(-1244898448)::in tcp conncet
+::pid(-1231980432)::in invoke
+::pid(-1231980432)::tcp send:::pid(-1231980432)::25::pid(-1231980432)::in invoke
+::pid(-1244898448)::hello
+::pid(-1244898448)::in readline
+::pid(-1244898448)::hello
+::pid(-1244898448)::recv buf:::pid(-1244898448)::hello
+::pid(-1231980432)::tmp->buf:::pid(-1231980432)::hello
+::pid(-1231980432)::
+::pid(-1231980432)::in test asy!!!!!!!!!!!!!!!!!!!!!!!tcp recv
+::first call::pid(-1231980432)::in NPP New
+::pid(-1231980432)::in invoke
+::pid(-1244898448)::in tcp conncet
+::pid(-1231980432)::in invoke
+::pid(-1231980432)::tcp send:::pid(-1231980432)::25::pid(-1231980432)::in invoke
+::pid(-1244898448)::hello
+::pid(-1244898448)::in readline
+::pid(-1244898448)::hello
+::pid(-1244898448)::recv buf:::pid(-1244898448)::hello
+::first call::pid(-1231980432)::in NPP New
+::pid(-1231980432)::in invoke
+::pid(-1244898448)::in tcp conncet
+::pid(-1231980432)::in invoke
+::pid(-1231980432)::tcp send:::pid(-1231980432)::25::pid(-1244898448)::hello
+::pid(-1231980432)::in invoke
+::pid(-1244898448)::in readline
+::pid(-1244898448)::hello
+::pid(-1244898448)::recv buf:::pid(-1244898448)::hello
+::pid(-1231980432)::tmp->buf:::pid(-1231980432)::hello
+::pid(-1231980432)::
+::pid(-1231980432)::in test asy!!!!!!!!!!!!!!!!!!!!!!!tcp recv
+::first call::pid(-1231980432)::in NPP New
+::pid(-1231980432)::in invoke
+::pid(-1244898448)::in tcp conncet
+::pid(-1231980432)::in invoke
+::pid(-1231980432)::tcp send:::pid(-1231980432)::25::pid(-1244898448)::hello
+::pid(-1231980432)::in invoke
+::pid(-1244898448)::in readline
+::pid(-1244898448)::hello
+::pid(-1244898448)::recv buf:::pid(-1244898448)::hello
+::pid(-1231980432)::tmp->buf:::pid(-1231980432)::hello
+::pid(-1231980432)::
+::pid(-1231980432)::in test asy!!!!!!!!!!!!!!!!!!!!!!!tcp recv
+::first call::pid(-1231980432)::in NPP New
+::pid(-1231980432)::in invoke
+::pid(-1244898448)::in tcp conncet
+::pid(-1231980432)::in invoke
+::pid(-1231980432)::tcp send:::pid(-1231980432)::25::pid(-1231980432)::in invoke
+::pid(-1244898448)::hello
+::pid(-1244898448)::in readline
+::pid(-1244898448)::hello
+::pid(-1244898448)::recv buf:::pid(-1244898448)::hello
+::pid(-1231980432)::tmp->buf:::pid(-1231980432)::hello
+::pid(-1231980432)::
+::pid(-1231980432)::in test asy!!!!!!!!!!!!!!!!!!!!!!!tcp recv
+::first call::pid(-1231980432)::in NPP New
+::pid(-1231980432)::in invoke
+::pid(-1244898448)::in tcp conncet
+::pid(-1231980432)::in invoke
+::pid(-1231980432)::tcp send:::pid(-1231980432)::25::pid(-1231980432)::in invoke
+::pid(-1244898448)::hello
+::pid(-1244898448)::in readline
+::pid(-1244898448)::hello
+::pid(-1244898448)::recv buf:::pid(-1244898448)::hello
+::first call::pid(-1231980432)::in NPP New
+::pid(-1231980432)::in invoke
+::pid(-1244898448)::in tcp conncet
+::pid(-1244898448)::in tcp conncet
+::pid(-1244898448)::in tcp conncet
+::pid(-1244898448)::in tcp conncet
+::pid(-1244898448)::in tcp conncet
+::pid(-1244898448)::in tcp conncet
+::pid(-1244898448)::in tcp conncet
+::pid(-1244898448)::in tcp conncet
+::pid(-1244898448)::in tcp conncet
+::pid(-1244898448)::in tcp conncet
+::pid(-1244898448)::in tcp conncet
+::pid(-1244898448)::in tcp conncet
+::pid(-1244898448)::in tcp conncet
+::pid(-1244898448)::in tcp conncet
+::pid(-1244898448)::in tcp conncet
+::pid(-1244898448)::in tcp conncet
+::pid(-1244898448)::in tcp conncet
+::pid(-1244898448)::in tcp conncet
+::pid(-1244898448)::in tcp conncet
+::pid(-1244898448)::in tcp conncet
+::pid(-1244898448)::in tcp conncet
+::pid(-1244898448)::in tcp conncet
+::pid(-1244898448)::in tcp conncet
+::pid(-1244898448)::in tcp conncet
+::pid(-1244898448)::in tcp conncet
+::pid(-1244898448)::in tcp conncet
+::pid(-1244898448)::in tcp conncet
+::first call::pid(-1231980432)::in NPP New
+::pid(-1231980432)::in invoke
+::pid(-1244898448)::in tcp conncet
+::pid(-1231980432)::in invoke
+::pid(-1231980432)::tcp send:::pid(-1231980432)::25::pid(-1244898448)::hello
+::pid(-1231980432)::in invoke
+::pid(-1244898448)::in readline
+::pid(-1244898448)::hello
+::pid(-1244898448)::recv buf:::pid(-1244898448)::hello
+::pid(-1231980432)::tmp->buf:::pid(-1231980432)::hello
+::pid(-1231980432)::
+::pid(-1231980432)::in test asy!!!!!!!!!!!!!!!!!!!!!!!tcp recv
+::pid(-1231980432)::in test asy!!!!!!!!!!!!!!!!!!!!!!!tcp recv
+::first call::pid(-1231980432)::in NPP New
+::pid(-1231980432)::in invoke
+::pid(-1244898448)::in tcp conncet
+::pid(-1231980432)::in invoke
+::pid(-1231980432)::tcp send:::pid(-1231980432)::25::pid(-1231980432)::in invoke
+::pid(-1244898448)::hello
+::pid(-1244898448)::in readline
+::pid(-1244898448)::hello
+::pid(-1244898448)::recv buf:::pid(-1244898448)::hello
+::pid(-1231980432)::tmp->buf:::pid(-1231980432)::hello
+::pid(-1231980432)::
+::pid(-1231980432)::in test asy!!!!!!!!!!!!!!!!!!!!!!!tcp recv
+::pid(-1231980432)::in test asy!!!!!!!!!!!!!!!!!!!!!!!tcp recv
+::first call::pid(-1231980432)::in NPP New
+::pid(-1231980432)::in invoke
+::pid(-1244898448)::in tcp conncet
+::pid(-1231980432)::in NPP New
+::pid(-1231980432)::in invoke
+::pid(-1244898448)::in tcp conncet
+::pid(-1231980432)::in invoke
+::pid(-1231980432)::tcp send:::pid(-1231980432)::26::pid(-1231980432)::in invoke
+::pid(-1244898448)::こんにちは
+::pid(-1244898448)::in readline
+::pid(-1244898448)::こんにちは
+::pid(-1244898448)::recv buf:::pid(-1244898448)::こんにちは
+::pid(-1231980432)::tmp->buf:::pid(-1231980432)::こんにちは
+::pid(-1231980432)::
+::pid(-1231980432)::in test asy!!!!!!!!!!!!!!!!!!!!!!!tcp recv
+::pid(-1231980432)::in test asy!!!!!!!!!!!!!!!!!!!!!!!tcp recv
