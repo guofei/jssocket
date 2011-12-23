@@ -4,7 +4,7 @@
 #include "BasicPlugin.h"
 extern bool hasMethod(NPObject *obj, NPIdentifier methodName);
 extern bool invoke(NPObject *obj, NPIdentifier methodName,const NPVariant *args,uint32_t argCount,NPVariant *result);
-extern void *threadfunc(void* p);
+extern void *threadfunc(void* instance);
 extern pthread_mutex_t mutex;
 
 typedef struct async_args{

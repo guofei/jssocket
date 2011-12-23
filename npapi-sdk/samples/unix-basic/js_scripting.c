@@ -1,10 +1,12 @@
-#include "js_scripting.h"
-#include "api.h"
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
 #include <unistd.h>
 #include <pthread.h>
+
+#include "js_scripting.h"
+#include "api.h"
+#include "list.h"
 
 #define LEN_OF_FUNCNAME 50
 pthread_mutex_t mutex;
@@ -77,6 +79,7 @@ void callback_to_javascript(void *func_args)
 void* threadfunc(void* p)
 {
 	pthread_detach(pthread_self());
+	NPP instance = (NPP)p;
 	while(1){
 		int s;
 		if(event_queue != NULL){
@@ -87,7 +90,7 @@ void* threadfunc(void* p)
 				args->obj = event_queue->obj;
 				args->s = s;
 				args->n = TCP_CONNECT;
-				sBrowserFuncs->pluginthreadasynccall( plugin_instance_data->npp, callback_to_javascript, args );
+				sBrowserFuncs->pluginthreadasynccall( instance, callback_to_javascript, args );
 			}
 			else if(event_queue->name == TCP_SEND){
 				char *m = (char *)event_queue->buf;
@@ -105,7 +108,7 @@ void* threadfunc(void* p)
 				args->n = TCP_RECV;
 				strncpy(args->buf,buf,strlen(buf));
 				//args->buf[0] = 'h';args->buf[1] = 'i'; args->buf[2] = '\0';
-				sBrowserFuncs->pluginthreadasynccall( plugin_instance_data->npp, callback_to_javascript, args );
+				sBrowserFuncs->pluginthreadasynccall( instance, callback_to_javascript, args );
 
 			}
 			else if(event_queue->name == TCP_ACC_PORT){

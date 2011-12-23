@@ -1,11 +1,12 @@
-#include "BasicPlugin.h"
-#include "api.h"
-#include "js_scripting.h"
-
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
 #include <pthread.h>
+
+#include "BasicPlugin.h"
+#include "api.h"
+#include "js_scripting.h"
+#include "list.h"
 
 #define PLUGIN_NAME        "WebSocket with Server"
 #define PLUGIN_DESCRIPTION PLUGIN_NAME " (Mozilla SDK)"
@@ -114,7 +115,7 @@ NPP_New(NPMIMEType pluginType, NPP instance, uint16_t mode, int16_t argc, char* 
 	pthread_mutex_init(&mutex, &mutexattr);
 
 	pthread_t t;
-	if ( pthread_create(&t, NULL, threadfunc, NULL) != 0 )  
+	if ( pthread_create(&t, NULL, threadfunc, instance) != 0 )  
 		exit(1);
 	
 	
