@@ -1,0 +1,48 @@
+<html>
+<body>
+
+<center><h1>Plugin</h1></center>
+
+<br><br>
+
+<center>
+
+
+<embed type="application/basic-plugin" id="Basic Sample Plug-in" hidden="true">
+
+<script>
+
+plugin_call_test();
+function plugin_call_test(){
+
+  var plugin = document.getElementById( "Basic Sample Plug-in" );
+
+  if( !plugin ){
+    alert( "no plugin" );
+  }else{
+    alert( "succeeded load plugins" );
+  }
+  alert( "before result" );
+  var ip = "127.0.0.1";
+  var s = plugin.tcp_connect(ip,800);
+  alert( "after s" );
+  alert( s );
+  var len = plugin.tcp_send(s,"hello word\nhhh");
+  alert( "after len" );
+  alert( len );
+  plugin.tcp_recv(1,
+        function(i) {   
+            alert(i);
+        }   
+  );
+  alert("after recv");
+  plugin.close(s);
+}
+
+</script>
+</center>
+
+</html>
+</body>
+
+
