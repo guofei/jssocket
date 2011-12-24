@@ -249,3 +249,45 @@
 ::pid(-1231980432)::
 ::pid(-1231980432)::in test asy!!!!!!!!!!!!!!!!!!!!!!!tcp recv
 ::pid(-1231980432)::in test asy!!!!!!!!!!!!!!!!!!!!!!!tcp recv
+::first call::pid(-1229039792)::in invoke
+::pid(-1239569552)::in tcp conncet
+::pid(-1229039792)::in invoke
+::first call::pid(-1229039792)::in invoke
+::pid(-1239569552)::in tcp conncet
+::pid(-1229039792)::in invoke
+::first call::pid(-1229039792)::in invoke
+::pid(-1239569552)::in tcp conncet
+::pid(-1229039792)::in invoke
+::pid(-1229039792)::tcp send:::pid(-1229039792)::25::pid(-1239569552)::こんにちはP`{V`{X`{
+::pid(-1229039792)::in invoke
+::pid(-1239569552)::in readline
+::pid(-1239569552)::こんにちはP`{V`{X`{
+::pid(-1239569552)::recv buf:::pid(-1239569552)::こんにちはP`{V`{X`{
+::pid(-1229039792)::tmp->buf:::pid(-1229039792)::こんにちはP`{V`{X`{
+::pid(-1229039792)::
+::pid(-1229039792)::in test asy!!!!!!!!!!!!!!!!!!!!!!!tcp recv
+::pid(-1229039792)::in test asy!!!!!!!!!!!!!!!!!!!!!!!tcp recv
+::first call::pid(-1229039792)::in invoke
+::pid(-1239569552)::in tcp conncet
+::pid(-1229039792)::in invoke
+::pid(-1229039792)::tcp send:::pid(-1229039792)::25::pid(-1239569552)::こんにちは
+::pid(-1229039792)::in invoke
+::pid(-1239569552)::in readline
+::pid(-1239569552)::こんにちは
+::pid(-1239569552)::recv buf:::pid(-1239569552)::こんにちは
+::pid(-1229039792)::tmp->buf:::pid(-1229039792)::こんにちは
+::pid(-1229039792)::
+::pid(-1229039792)::in test asy!!!!!!!!!!!!!!!!!!!!!!!tcp recv
+::pid(-1229039792)::in test asy!!!!!!!!!!!!!!!!!!!!!!!tcp recv
+::first call::pid(-1229039792)::in invoke
+::pid(-1239569552)::in tcp conncet
+::pid(-1229039792)::in invoke
+::first call::pid(-1239569552)::in tcp conncet
+::pid(-1229039792)::tcp send:::pid(-1229039792)::25::pid(-1239569552)::こんにちは
+::pid(-1239569552)::in readline
+::pid(-1239569552)::こんにちは
+::pid(-1239569552)::recv buf:::pid(-1239569552)::こんにちは
+::pid(-1229039792)::tmp->buf:::pid(-1229039792)::こんにちは
+::pid(-1229039792)::
+::pid(-1229039792)::in test asy!!!!!!!!!!!!!!!!!!!!!!!tcp recv
+::pid(-1229039792)::in test asy!!!!!!!!!!!!!!!!!!!!!!!tcp recv

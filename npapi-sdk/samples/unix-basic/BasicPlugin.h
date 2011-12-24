@@ -1,6 +1,7 @@
 #ifndef BasicPlugin_h_
 #define BasicPlugin_h_
 
+#include "list.h"
 // This just needs to include NPAPI headers, change the path to whatever works
 // for you. Note that "XP_UNIX=1" is defined in the makefile so that the NPAPI
 // headers know we're compiling for unix.
@@ -27,6 +28,7 @@ NPError NPP_SetValue(NPP instance, NPNVariable variable, void *value);
 typedef struct InstanceData {
 	NPP npp;
 	NPObject *npobject;
+	list_t list;
 } InstanceData;
 extern InstanceData *plugin_instance_data;
 extern NPNetscapeFuncs* sBrowserFuncs;

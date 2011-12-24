@@ -22,20 +22,14 @@ static char arrayFuncNames[NUM_OF_FUNCS][LEN_OF_FUNCNAME] = {
 	{ "test" }
 };
 
-typedef struct _socket_event
+struct socket_event
 {
 	FUNCNAMES name;
 	int s;
 	void *buf;
 	NPObject *obj;
 	int n;
-	struct _socket_event *next;
-}socket_event;
-
-socket_event *event_queue;
-
-static int add_event(socket_event *event);
-static int del_event(socket_event *fist);
+};
 
 static void callback_to_javascript(void *func_args);
 
@@ -43,7 +37,6 @@ void callback_to_javascript(void *func_args)
 {
 	//async_args *args = (async_args*)func_args;
 	//NPObject *args = (NPObject *)func_args;
-	
 	async_args *tmp = (async_args *)func_args;
 	if( tmp->n == TCP_CONNECT ){
 		NPVariant type;
@@ -80,69 +73,54 @@ void* threadfunc(void* p)
 {
 	pthread_detach(pthread_self());
 	NPP instance = (NPP)p;
+	InstanceData *tmp_ins = instance->pdata;
+	list_t *list = &tmp_ins->list;
 	while(1){
 		int s;
-		if(event_queue != NULL){
-			if (event_queue->name == TCP_CONNECT){
-				char *server = (char *)event_queue->buf;
-				s = tcp_connect(server,event_queue->s);
+		struct socket_event *event = list_pop(list);
+		if( event != NULL){
+			if (event->name == TCP_CONNECT){
+				char *server = (char *)event->buf;
+				s = tcp_connect(server,event->s);
 				async_args *args = malloc(sizeof(async_args));
-				args->obj = event_queue->obj;
+				args->obj = event->obj;
 				args->s = s;
 				args->n = TCP_CONNECT;
 				sBrowserFuncs->pluginthreadasynccall( instance, callback_to_javascript, args );
 			}
-			else if(event_queue->name == TCP_SEND){
-				char *m = (char *)event_queue->buf;
+			else if(event->name == TCP_SEND){
+				char *m = (char *)event->buf;
 				DebugMsg(m);
 
-				writen(event_queue->s,m,strlen(m));
+				writen(event->s,m,strlen(m));
 			}
-			else if(event_queue->name == TCP_RECV){
+			else if(event->name == TCP_RECV){
 				char buf[1024];
-				readline(event_queue->s, buf, 1024);
+				readline(event->s, buf, 1024);
 				DebugMsg("recv buf:");
 				DebugMsg(buf);
 				async_args *args = malloc(sizeof(async_args));
-				args->obj = event_queue->obj;
+				args->obj = event->obj;
 				args->n = TCP_RECV;
 				strncpy(args->buf,buf,strlen(buf));
-				//args->buf[0] = 'h';args->buf[1] = 'i'; args->buf[2] = '\0';
 				sBrowserFuncs->pluginthreadasynccall( instance, callback_to_javascript, args );
 
 			}
-			else if(event_queue->name == TCP_ACC_PORT){
+			else if(event->name == TCP_ACC_PORT){
 
 			}
-			else if(event_queue->name == TCP_ACCEPT){
+			else if(event->name == TCP_ACCEPT){
 
 			}
-			else if(event_queue->name == CLOSE){
+			else if(event->name == CLOSE){
 				DebugMsg("close");
-				close(event_queue->s);
+				close(event->s);
 			}
 
-			del_event(event_queue);
+			free(event);
 		}
 	}
-	
-	return NULL;  
-}
-
-
-void test_asy(void *func_args)
-{
-	//async_args *args = (async_args*)func_args;
-	NPObject *args = (NPObject *)func_args;
-	
-	NPVariant type;
-	STRINGZ_TO_NPVARIANT("12345",type);
-	NPVariant myargs[] = { type };
-	NPVariant voidResponse;
-	sBrowserFuncs->invokeDefault( plugin_instance_data->npp, args, myargs, 1, &voidResponse );
-	DebugMsg("in test asy!!!!!!!!!!!!!!!!!!!!!!!\n");
-	//sBrowserFuncs->releaseobject( args->func );
-	sBrowserFuncs->releasevariantvalue(&voidResponse);
+	return NULL;
 }
 
 //enum __FUNNAMESが返る
@@ -154,7 +132,7 @@ int chkMethod(char *target)
 	for( i=1; i<NUM_OF_FUNCS; i++ ){
 		if( 0 == strcmp( target, arrayFuncNames[i] )){
 			nRet = i;
-			break; 
+			break;
 		}
 	}
 	return nRet;
@@ -165,7 +143,6 @@ bool hasMethod(NPObject *obj, NPIdentifier methodName){
 
 	bool result = false;
 	int nFuncType = 0;
-  
 	if( 0 < (nFuncType =  chkMethod( name )) ){
 		result = true;
 	}
@@ -180,51 +157,12 @@ bool invoke(NPObject *obj, NPIdentifier methodName,const NPVariant *args,uint32_
 	int nType = chkMethod( name );
 	sBrowserFuncs->memfree( name );
 
-	DebugMsg("in invoke\n");
-	
+	list_t *list = &plugin_instance_data->list;
 	int i;
 	NPString str;
 	static char buf[1024];
-	socket_event *event = malloc(sizeof(socket_event));
-
-	switch( nType ){
-	case TEST:
-		DebugMsg("in test\n");
-		{
-		char* message = "Hello from C";
-		DebugMsg(message);
-
-		// Get window object.
-		NPObject* window = NULL;
-		sBrowserFuncs->getvalue(plugin_instance_data->npp, NPNVWindowNPObject, &window);
-
-		// Get console object.
-		NPVariant consoleVar;
-		NPIdentifier id = sBrowserFuncs->getstringidentifier("console");
-		sBrowserFuncs->getproperty(plugin_instance_data->npp, window, id, &consoleVar);
-		NPObject* console = NPVARIANT_TO_OBJECT(consoleVar);
-
-		// Get the debug object.
-		id = sBrowserFuncs->getstringidentifier("debug");
-
-		// Invoke the call with the message!
-		NPVariant type;
-		STRINGZ_TO_NPVARIANT(message, type);
-		NPVariant myargs[] = { type };
-		NPVariant voidResponse;
-		sBrowserFuncs->invoke(plugin_instance_data->npp, console, id, myargs,
-			   sizeof(myargs) / sizeof(myargs[0]),
-			   &voidResponse);
-
-		// Cleanup all allocated objects, otherwise, reference count and
-		// memory leaks will happen.
-		sBrowserFuncs->releaseobject(window);
-		sBrowserFuncs->releasevariantvalue(&consoleVar);
-		sBrowserFuncs->releasevariantvalue(&voidResponse);
-		}
-		INT32_TO_NPVARIANT(1,*result);
-		return true;
-		break;
+	struct socket_event *event = malloc(sizeof(struct socket_event));
+	switch(nType){
 	case TCP_CONNECT:
 		BOOLEAN_TO_NPVARIANT( false, *result);
 		int ret = 0,s;
@@ -235,7 +173,7 @@ bool invoke(NPObject *obj, NPIdentifier methodName,const NPVariant *args,uint32_
 				INT32_TO_NPVARIANT(-1, *result);
 				return true;
 			}
-			
+
 			if(NPVARIANT_IS_INT32(args[1]))
 				s = NPVARIANT_TO_INT32( args[1] );
 			else if(NPVARIANT_IS_DOUBLE(args[1]))
@@ -244,7 +182,7 @@ bool invoke(NPObject *obj, NPIdentifier methodName,const NPVariant *args,uint32_
 				INT32_TO_NPVARIANT(-1, *result);
 				return true;
 			}
-			
+
 			NPObject *callback_obj;
 			if( NPVARIANT_IS_OBJECT(args[2]) )
 				callback_obj = NPVARIANT_TO_OBJECT( args[2] );
@@ -260,11 +198,10 @@ bool invoke(NPObject *obj, NPIdentifier methodName,const NPVariant *args,uint32_
 			buf[str.UTF8Length] = '\0';
 			event->s = s;
 			event->obj = callback_obj;
-			event->next = NULL;
-			add_event(event);
+			list_push(list,event);
 		}
 		INT32_TO_NPVARIANT(ret, *result);
-		return true;    
+		return true;
 		break;
 	case TCP_SEND:
 		BOOLEAN_TO_NPVARIANT( false, *result);
@@ -276,10 +213,8 @@ bool invoke(NPObject *obj, NPIdentifier methodName,const NPVariant *args,uint32_
 				return true;
 			}
 
-			strncpy(buf,(char *)str.UTF8Characters,strlen((char *)str.UTF8Characters));
+			strncpy(buf,(char *)str.UTF8Characters,str.UTF8Length+1);
 
-			/* event->buf = strndup((char *)str.UTF8Characters,str.UTF8Length+1); */
-			/* char *buf = event->buf; */
 			buf[str.UTF8Length] = '\0';
 			sprintf(buf, "%s\n",buf);
 
@@ -287,9 +222,6 @@ bool invoke(NPObject *obj, NPIdentifier methodName,const NPVariant *args,uint32_
 				i = NPVARIANT_TO_INT32( args[0] );
 			else if(NPVARIANT_IS_DOUBLE(args[0]))
 				i = NPVARIANT_TO_DOUBLE( args[0] );
-
-			//i = NPVARIANT_TO_INT32( args[0] );//socket
-			//DebugMsg((char *)str.UTF8Characters);
 
 			event->name = TCP_SEND;
 			event->s = i;
@@ -300,13 +232,9 @@ bool invoke(NPObject *obj, NPIdentifier methodName,const NPVariant *args,uint32_
 
 			event->buf = malloc(sizeof(char)*(strlen(buf)+1));
 			event->buf = strncpy(event->buf,buf,strlen(buf)+1);
-			event->next = NULL;
-			add_event(event);
-			//int slen = writen(i,(char *)str.UTF8Characters, strlen((char *)str.UTF8Characters));
-
+			list_push(list,event);
 			INT32_TO_NPVARIANT(1, *result);
-			//DebugMsg("send ok\n");
-			return true;    
+			return true;
 		}
 		break;
 	case TCP_RECV:
@@ -318,7 +246,6 @@ bool invoke(NPObject *obj, NPIdentifier methodName,const NPVariant *args,uint32_
 				i = NPVARIANT_TO_DOUBLE( args[0] );
 
 			//i = NPVARIANT_TO_INT32( args[0] );
-			
 			NPObject *callback_obj;
 			callback_obj = NPVARIANT_TO_OBJECT( args[1] );
 			sBrowserFuncs->retainobject( callback_obj );
@@ -326,16 +253,8 @@ bool invoke(NPObject *obj, NPIdentifier methodName,const NPVariant *args,uint32_
 			event->name = TCP_RECV;
 			event->s = i;
 			event->obj = callback_obj;
-			add_event(event);
-			//async_args myargs;
-			//myargs.func = callback_obj;
-			//int slen = readline( i,buf,1024 );
-			//DebugMsg(buf);
-			//sBrowserFuncs->pluginthreadasynccall( plugin_instance_data->npp, test_asy, callback_obj );
-			//DebugMsg("in tcp recv\n");			
-			//STRING_TO_NPVARIANT(buf, *result);
-			
-			return true;    
+			list_push(list,event);
+			return true;
 		}
 		break;
 	case CLOSE:
@@ -348,8 +267,8 @@ bool invoke(NPObject *obj, NPIdentifier methodName,const NPVariant *args,uint32_
 
 			event->name = CLOSE;
 			event->s = i;
-			add_event(event);
-			return true;    
+			list_push(list,event);
+			return true;
 		}
 		break;
 	default:
@@ -358,36 +277,3 @@ bool invoke(NPObject *obj, NPIdentifier methodName,const NPVariant *args,uint32_
 
 	return false;
 }
-
-int add_event(socket_event *event)
-{
-	pthread_mutex_lock(&mutex);
-	if( event == NULL ){
-		return -1;
-	}
-
-	if( event_queue == NULL ){
-		event_queue = event;
-	}
-	else{
-		socket_event *tmp = event_queue;
-		while(tmp->next != NULL){
-			tmp = tmp->next;
-		}
-		tmp->next = event;
-	}
-
-	pthread_mutex_unlock(&mutex);
-	return 0;
-}
-
-int del_event(socket_event *fist)
-{
-	pthread_mutex_lock(&mutex);
-	event_queue = fist->next;
-	//free(fist->buf);
-	free(fist);
-	pthread_mutex_unlock(&mutex);
-	return 0;
-}
-

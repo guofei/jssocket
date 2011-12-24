@@ -106,6 +106,7 @@ NPP_New(NPMIMEType pluginType, NPP instance, uint16_t mode, int16_t argc, char* 
 	memset(instanceData, 0, sizeof(InstanceData));
 	instanceData->npp = instance;
 	instanceData->npobject = sBrowserFuncs->createobject(instance,&PluginClass);
+	list_init(&instanceData->list);
 	instance->pdata = instanceData;
 
 	plugin_instance_data = instanceData;
