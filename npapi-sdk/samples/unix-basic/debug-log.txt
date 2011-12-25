@@ -291,3 +291,60 @@
 ::pid(-1229039792)::
 ::pid(-1229039792)::in test asy!!!!!!!!!!!!!!!!!!!!!!!tcp recv
 ::pid(-1229039792)::in test asy!!!!!!!!!!!!!!!!!!!!!!!tcp recv
+::first call::pid(-1239569552)::in tcp conncet
+::pid(-1239569552)::こんにちは
+::pid(-1239569552)::in readline
+::pid(-1239569552)::こんにちは
+::pid(-1239569552)::recv buf:::pid(-1239569552)::こんにちは
+::pid(-1229039792)::tmp->buf:::pid(-1229039792)::こんにちは
+::pid(-1229039792)::
+::pid(-1229039792)::in test asy!!!!!!!!!!!!!!!!!!!!!!!tcp recv
+::pid(-1229039792)::in test asy!!!!!!!!!!!!!!!!!!!!!!!tcp recv
+::first call::pid(-1239569552)::in tcp conncet
+::pid(-1239569552)::こんにちは
+::pid(-1239569552)::in readline
+::pid(-1239569552)::こんにちは
+::pid(-1239569552)::recv buf:::pid(-1239569552)::こんにちは
+::pid(-1229039792)::tmp->buf:::pid(-1229039792)::こんにちは
+::pid(-1229039792)::
+::pid(-1229039792)::in test asy!!!!!!!!!!!!!!!!!!!!!!!tcp recv
+::pid(-1229039792)::in test asy!!!!!!!!!!!!!!!!!!!!!!!tcp recv
+::first call::pid(-1239569552)::in tcp conncet
+::pid(-1239569552)::こんにちは
+::first call::pid(-1239569552)::in tcp conncet
+::pid(-1239569552)::こんにちは
+::pid(-1239569552)::in readline
+::pid(-1239569552)::こんにちは
+::pid(-1239569552)::recv buf:::pid(-1239569552)::こんにちは
+::pid(-1229039792)::tmp->buf:::pid(-1229039792)::こんにちは
+::pid(-1229039792)::
+::pid(-1229039792)::in test asy!!!!!!!!!!!!!!!!!!!!!!!tcp recv
+::pid(-1229039792)::in test asy!!!!!!!!!!!!!!!!!!!!!!!tcp recv
+::first call::pid(-1239569552)::in tcp conncet
+::pid(-1239569552)::こんにちは::pid(-1239569552)::in readline
+::first call::pid(-1239569552)::in tcp conncet
+::pid(-1239569552)::こんにちは::pid(-1239569552)::in readline
+::first call::pid(-1239569552)::in tcp conncet
+::pid(-1239569552)::こんにちは::pid(-1239569552)::in readline
+::first call::pid(-1239569552)::in tcp conncet
+::first call::pid(-1239569552)::in tcp conncet
+::first call::pid(-1239569552)::in tcp conncet
+::pid(-1239569552)::こんにちは
+::pid(-1239569552)::in readline
+::pid(-1239569552)::こんにちは
+::pid(-1239569552)::recv buf:::pid(-1239569552)::こんにちは
+::pid(-1229039792)::tmp->buf:::pid(-1229039792)::こんにちは
+::pid(-1229039792)::
+::pid(-1229039792)::in test asy!!!!!!!!!!!!!!!!!!!!!!!tcp recv
+::pid(-1229039792)::in test asy!!!!!!!!!!!!!!!!!!!!!!!tcp recv
+::first call::pid(-1239569552)::in tcp conncet
+::first call::pid(-1239569552)::in tcp conncet
+::pid(-1239569552)::GET / HTTP/1.1
+Upgrade: websocket
+Connection: Upgrade
+Host: echo.websocket.org
+Origin: http://websocket.org
+Sec-WebSocket-Key: IA70e+qWW2jx/BJjsC2YPA==
+Sec-WebSocket-Version: 13
+
+::pid(-1239569552)::in readline

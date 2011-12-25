@@ -28,7 +28,7 @@ function plugin_call_test(){
   var s = plugin.tcp_connect(ip,8000,
         function(i) {   
              alert(i);
-             plugin.tcp_send(i,"こんにちは");
+             plugin.tcp_send(i,"こんにちは\n");
              plugin.tcp_recv(i,
                       function(m){alert(m);}
              );

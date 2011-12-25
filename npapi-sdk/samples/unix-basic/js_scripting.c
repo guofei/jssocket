@@ -158,122 +158,98 @@ bool invoke(NPObject *obj, NPIdentifier methodName,const NPVariant *args,uint32_
 	sBrowserFuncs->memfree( name );
 
 	list_t *list = &plugin_instance_data->list;
-	int i;
+	int i,port;
+	char *buf;
 	NPString str;
-	static char buf[1024];
+	NPObject *callback_obj;
 	struct socket_event *event = malloc(sizeof(struct socket_event));
+
 	switch(nType){
 	case TCP_CONNECT:
-		BOOLEAN_TO_NPVARIANT( false, *result);
-		int ret = 0,s;
-		if(argCount == 3){
-			if( NPVARIANT_IS_STRING( args[0] ) )
-				str = NPVARIANT_TO_STRING( args[0] );
-			else{
-				INT32_TO_NPVARIANT(-1, *result);
-				return true;
-			}
+		if(argCount != 3 || !NPVARIANT_IS_STRING(args[0]) || (!NPVARIANT_IS_INT32(args[1]) && !NPVARIANT_IS_DOUBLE(args[1]))
+		   || !NPVARIANT_IS_OBJECT(args[2]))
+			goto error;
 
-			if(NPVARIANT_IS_INT32(args[1]))
-				s = NPVARIANT_TO_INT32( args[1] );
-			else if(NPVARIANT_IS_DOUBLE(args[1]))
-				s = NPVARIANT_TO_DOUBLE( args[1] );
-			else{
-				INT32_TO_NPVARIANT(-1, *result);
-				return true;
-			}
+		str = NPVARIANT_TO_STRING( args[0] );
 
-			NPObject *callback_obj;
-			if( NPVARIANT_IS_OBJECT(args[2]) )
-				callback_obj = NPVARIANT_TO_OBJECT( args[2] );
-			else{
-				INT32_TO_NPVARIANT(-1, *result);
-				return true;
-			}
-			sBrowserFuncs->retainobject( callback_obj );
+		if(NPVARIANT_IS_INT32(args[1]))
+			port = NPVARIANT_TO_INT32( args[1] );
+		else if(NPVARIANT_IS_DOUBLE(args[1]))
+			port = NPVARIANT_TO_DOUBLE( args[1] );
 
-			event->name = TCP_CONNECT;
-			event->buf = strndup((char *)str.UTF8Characters, str.UTF8Length+1);
-			char *buf = event->buf;
-			buf[str.UTF8Length] = '\0';
-			event->s = s;
-			event->obj = callback_obj;
-			list_push(list,event);
-		}
-		INT32_TO_NPVARIANT(ret, *result);
+		callback_obj = NPVARIANT_TO_OBJECT( args[2] );
+		sBrowserFuncs->retainobject( callback_obj );
+
+		event->name = TCP_CONNECT;
+		event->buf = strndup((char *)str.UTF8Characters, str.UTF8Length+1);
+		buf = event->buf;
+		buf[str.UTF8Length] = '\0';
+		event->s = port;
+		event->obj = callback_obj;
+		list_push(list,event);
+
+		INT32_TO_NPVARIANT(0, *result);
 		return true;
-		break;
 	case TCP_SEND:
-		BOOLEAN_TO_NPVARIANT( false, *result);
-		if(argCount == 2){
-			if( NPVARIANT_IS_STRING( args[1] ) )
-				str = NPVARIANT_TO_STRING( args[1] ); //msg
-			else{
-				INT32_TO_NPVARIANT(-1, *result);
-				return true;
-			}
+		if(argCount != 2 || (!NPVARIANT_IS_INT32(args[0]) && !NPVARIANT_IS_DOUBLE(args[0])) || !NPVARIANT_IS_STRING(args[1]))
+			goto error;
 
-			strncpy(buf,(char *)str.UTF8Characters,str.UTF8Length+1);
+		//socket
+		if(NPVARIANT_IS_INT32(args[0]))
+			i = NPVARIANT_TO_INT32( args[0] );
+		else if(NPVARIANT_IS_DOUBLE(args[0]))
+			i = NPVARIANT_TO_DOUBLE( args[0] );
 
-			buf[str.UTF8Length] = '\0';
-			sprintf(buf, "%s\n",buf);
+		str = NPVARIANT_TO_STRING(args[1]); //msg
+		event->buf = malloc(str.UTF8Length+2);
+		event->buf = strncpy(event->buf, (char *)str.UTF8Characters, str.UTF8Length);
+		buf = event->buf;
+		buf[str.UTF8Length] = '\0';
+		buf[str.UTF8Length+1] = '\0';
+		//sprintf(buf, "%s\n",buf);
 
-			if(NPVARIANT_IS_INT32(args[0]))
-				i = NPVARIANT_TO_INT32( args[0] );
-			else if(NPVARIANT_IS_DOUBLE(args[0]))
-				i = NPVARIANT_TO_DOUBLE( args[0] );
+		event->name = TCP_SEND;
+		event->s = i;
 
-			event->name = TCP_SEND;
-			event->s = i;
-			char strr[10];
-			sprintf(strr, "%d", event->s);
-			DebugMsg("tcp send:");
-			DebugMsg(strr);
-
-			event->buf = malloc(sizeof(char)*(strlen(buf)+1));
-			event->buf = strncpy(event->buf,buf,strlen(buf)+1);
-			list_push(list,event);
-			INT32_TO_NPVARIANT(1, *result);
-			return true;
-		}
-		break;
+		list_push(list,event);
+		INT32_TO_NPVARIANT(1, *result);
+		return true;
 	case TCP_RECV:
-		BOOLEAN_TO_NPVARIANT( false, *result);
-		if(argCount == 2){
-			if(NPVARIANT_IS_INT32(args[0]))
-				i = NPVARIANT_TO_INT32( args[0] );
-			else if(NPVARIANT_IS_DOUBLE(args[0]))
-				i = NPVARIANT_TO_DOUBLE( args[0] );
+		if(argCount != 2 || (!NPVARIANT_IS_INT32(args[0]) && !NPVARIANT_IS_DOUBLE(args[0])))
+			goto error;
 
-			//i = NPVARIANT_TO_INT32( args[0] );
-			NPObject *callback_obj;
-			callback_obj = NPVARIANT_TO_OBJECT( args[1] );
-			sBrowserFuncs->retainobject( callback_obj );
+		//socket
+		if(NPVARIANT_IS_INT32(args[0]))
+			i = NPVARIANT_TO_INT32( args[0] );
+		else if(NPVARIANT_IS_DOUBLE(args[0]))
+			i = NPVARIANT_TO_DOUBLE( args[0] );
 
-			event->name = TCP_RECV;
-			event->s = i;
-			event->obj = callback_obj;
-			list_push(list,event);
-			return true;
-		}
-		break;
+		callback_obj = NPVARIANT_TO_OBJECT(args[1]);
+		sBrowserFuncs->retainobject( callback_obj );
+
+		event->name = TCP_RECV;
+		event->s = i;
+		event->obj = callback_obj;
+		list_push(list,event);
+		return true;
 	case CLOSE:
-		BOOLEAN_TO_NPVARIANT( false, *result);
-		if(argCount == 1){
-			if(NPVARIANT_IS_INT32(args[0]))
-				i = NPVARIANT_TO_INT32( args[0] );
-			else if(NPVARIANT_IS_DOUBLE(args[0]))
-				i = NPVARIANT_TO_DOUBLE( args[0] );
+		if(argCount != 1 || (!NPVARIANT_IS_INT32(args[0]) && !NPVARIANT_IS_DOUBLE(args[0])))
+			goto error;
 
-			event->name = CLOSE;
-			event->s = i;
-			list_push(list,event);
-			return true;
-		}
-		break;
+		//socket
+		if(NPVARIANT_IS_INT32(args[0]))
+			i = NPVARIANT_TO_INT32( args[0] );
+		else if(NPVARIANT_IS_DOUBLE(args[0]))
+			i = NPVARIANT_TO_DOUBLE( args[0] );
+
+		event->name = CLOSE;
+		event->s = i;
+		list_push(list,event);
+		return true;
 	default:
-		break;
+		return false;
 	}
-
+error:
+	INT32_TO_NPVARIANT(-1, *result);
 	return false;
 }

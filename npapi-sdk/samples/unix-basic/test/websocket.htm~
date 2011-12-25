@@ -1,0 +1,54 @@
+<html>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8">
+<body>
+
+<center><h1>Plugin</h1></center>
+
+<br><br>
+
+<center>
+
+
+<embed type="application/basic-plugin" id="Basic Sample Plug-in" hidden="true">
+
+<script>
+
+plugin_call_test();
+function plugin_call_test(){
+
+  var plugin = document.getElementById( "Basic Sample Plug-in" );
+
+  if( !plugin ){
+    alert( "no plugin" );
+  }else{
+    alert( "succeeded load plugins" );
+  }
+  alert( "before result" );
+  var ip = "174.129.224.73";
+  var s = plugin.tcp_connect(ip,80,
+        function(i) {   
+             alert(i);
+/*
+             plugin.tcp_send(i,"GET / HTTP/1.1\n");
+             plugin.tcp_send(i,"Upgrade: websocket\nConnection: Upgrade\n");
+             plugin.tcp_send(i,"Host: echo.websocket.org\n");
+             plugin.tcp_send(i,"Origin: http://websocket.org\n");
+             plugin.tcp_send(i,"Sec-WebSocket-Key: IA70e+qWW2jx/BJjsC2YPA==\n");
+             plugin.tcp_send(i,"Sec-WebSocket-Version: 13\n");
+             plugin.tcp_send(i,"\n");
+*/
+             plugin.tcp_send(i,"GET / HTTP/1.1\r\nUpgrade: websocket\r\nConnection: Upgrade\r\nHost: 127.0.0.1:8000\r\nOrigin: http://websocket.org\r\nSec-WebSocket-Key: IA70e+qWW2jx/BJjsC2YPA==\r\nSec-WebSocket-Version: 13\r\n\r\n");
+             plugin.tcp_recv(i,
+                      function(m){alert(m);}
+             );
+        }   
+  );
+}
+
+</script>
+</center>
+
+</html>
+</body>
+
+
